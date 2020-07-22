@@ -20,11 +20,24 @@ https://www.youtube.com/watch?v=J7pFiXh-ydA
 
 #### Dependency list
 
+##### Client side
+
 * [React](https://github.com/facebook/react)
 * [Leaflet](https://github.com/Leaflet/Leaflet)
 * [React Leaflet](https://github.com/PaulLeCam/react-leaflet)
 * [Bootstrap](https://github.com/twbs/bootstrap)
 * [React-bootstrap](https://github.com/react-bootstrap/react-bootstrap)
+
+##### Server side
+
+* [Node](https://github.com/nodejs/node)
+* [Express](https://github.com/expressjs/express)
+* [Helmet](https://github.com/helmetjs/helmet)
+* [Joi](https://github.com/sideway/joi)
+* [Monk](https://github.com/Automattic/monk)
+* [Morgan](https://github.com/expressjs/morgan)
+* [Cors](https://github.com/expressjs/cors)
+* [Dotenv](https://github.com/motdotla/dotenv)
 
 #### API list
 
