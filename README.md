@@ -46,6 +46,12 @@ https://www.youtube.com/watch?v=J7pFiXh-ydA
 
 ---------
 
+#### Attributions
+
+* [Map marker icon (author: Paomedia)](https://www.iconfinder.com/icons/299087/map_marker_icon)
+
+---------
+
 #### Authors
 
 * Alexandre Ascenci
