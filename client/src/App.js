@@ -35,7 +35,9 @@ function App() {
       lng: -0.09
     },
     zoom: 2,
-    haveUsersLocation: false
+    haveUsersLocation: false,
+    sendingMessage: false,
+    sentMessage: false
   });
 
   const { register, handleSubmit, formState } = useForm({
@@ -47,6 +49,11 @@ function App() {
   });
 
   const onSubmit = data => {
+    setState({
+      ...state,
+      sendingMessage: true
+    });
+
     const userMessage = {
       name: data.name,
       message: data.message
@@ -66,13 +73,22 @@ function App() {
         })
       })
           .then(res => res.json())
-          .then(message => console.log(message));
+          .then(message => {
+            setTimeout(() => {
+              setState({
+                ...state,
+                sendingMessage: false,
+                sentMessage: true
+              });
+            }, 4000);
+          });
     }
   }
 
   useEffect(() => {
     navigator.geolocation.getCurrentPosition(function(position) {
       setState({
+        ...state,
         location: {
           lat: position.coords.latitude,
           lng: position.coords.longitude
@@ -85,6 +101,7 @@ function App() {
           .then(res => res.json())
           .then(location => {
             setState({
+              ...state,
               location: {
                 lat: location.latitude,
                 lng: location.longitude
@@ -116,24 +133,30 @@ function App() {
           <Card.Title>Welcome to GuestMap!</Card.Title>
           <Card.Text>Leave a message with your location!</Card.Text>
           <Card.Text>Thanks for stopping by!</Card.Text>
-          <Form onSubmit={ handleSubmit(onSubmit) }>
-            <Form.Group>
-              <Form.Label>Name</Form.Label>
-              <Form.Control
-                  ref={ register({ required: true, minLength: 3, maxLength: 50 }) }
-                  name="name" id="name"
-                  placeholder="Enter your name" />
-            </Form.Group>
-            <Form.Group>
-              <Form.Label>Message</Form.Label>
-              <Form.Control
-                  ref={ register({ required: true, minLength: 1, maxLength: 100 }) }
-                  name="message" id="name"
-                  as="textarea" placeholder="Enter your message" />
-            </Form.Group>
-            <Button type="submit" variant="primary"
-                    disabled={ !state.haveUsersLocation || !formState.isValid }>Send</Button>
-          </Form>
+          {
+            !state.sentMessage && !state.sendingMessage && state.haveUsersLocation ?
+                <Form onSubmit={ handleSubmit(onSubmit) }>
+                  <Form.Group>
+                    <Form.Label>Name</Form.Label>
+                    <Form.Control
+                        ref={ register({ required: true, minLength: 3, maxLength: 50 }) }
+                        name="name" id="name"
+                        placeholder="Enter your name" />
+                  </Form.Group>
+                  <Form.Group>
+                    <Form.Label>Message</Form.Label>
+                    <Form.Control
+                        ref={ register({ required: true, minLength: 1, maxLength: 100 }) }
+                        name="message" id="name"
+                        as="textarea" placeholder="Enter your message" />
+                  </Form.Group>
+                  <Button type="submit" variant="primary"
+                          disabled={ !state.haveUsersLocation || !formState.isValid }>Send</Button>
+                </Form> :
+                state.sendingMessage || !state.haveUsersLocation ?
+                    <video autoPlay loop src="https://i.giphy.com/media/BCIRKxED2Y2JO/giphy.mp4"/>
+                    : <Card.Text>Thanks for submitting a message!</Card.Text>
+          }
         </Card>
       </div>
   );
