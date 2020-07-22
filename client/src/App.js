@@ -1,5 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import { useForm } from "react-hook-form";
+import Joi from 'joi';
 
 import L from 'leaflet';
 import { Map, TileLayer, Marker, Popup } from 'react-leaflet';
@@ -17,6 +18,16 @@ let myIcon = L.icon({
   popupAnchor: [0, -41]
 });
 
+const schema = Joi.object().keys({
+  name: Joi.string().min(3).max(50).required(),
+  message: Joi.string().min(1).max(100).required()
+});
+
+// TODO Production url
+const API_URL = window.location.hostname === 'localhost' ?
+    'http://localhost:5000/api/v1/messages'
+    : 'production-url-messages'
+
 function App() {
   const [state, setState] = useState({
     location: {
@@ -27,9 +38,37 @@ function App() {
     haveUsersLocation: false
   });
 
-  const { register, handleSubmit } = useForm();
+  const { register, handleSubmit, formState } = useForm({
+    mode: "onChange",
+    defaultValues: {
+      name: '',
+      message: ''
+    }
+  });
 
-  const onSubmit = data => console.log(data);
+  const onSubmit = data => {
+    const userMessage = {
+      name: data.name,
+      message: data.message
+    };
+    const result = schema.validate(userMessage);
+
+    if (!result.error && state.haveUsersLocation) {
+      fetch(API_URL, {
+        method: 'POST',
+        headers: {
+          'content-type': 'application/json'
+        },
+        body: JSON.stringify({
+          ...userMessage,
+          latitude: state.location.lat,
+          longitude: state.location.lng
+        })
+      })
+          .then(res => res.json())
+          .then(message => console.log(message));
+    }
+  }
 
   useEffect(() => {
     navigator.geolocation.getCurrentPosition(function(position) {
@@ -77,16 +116,23 @@ function App() {
           <Card.Title>Welcome to GuestMap!</Card.Title>
           <Card.Text>Leave a message with your location!</Card.Text>
           <Card.Text>Thanks for stopping by!</Card.Text>
-          <Form onSubmit={handleSubmit(onSubmit)}>
+          <Form onSubmit={ handleSubmit(onSubmit) }>
             <Form.Group>
               <Form.Label>Name</Form.Label>
-              <Form.Control ref={register} name="name" placeholder="Enter your name" />
+              <Form.Control
+                  ref={ register({ required: true, minLength: 3, maxLength: 50 }) }
+                  name="name" id="name"
+                  placeholder="Enter your name" />
             </Form.Group>
             <Form.Group>
               <Form.Label>Message</Form.Label>
-              <Form.Control ref={register} name="message" as="textarea" placeholder="Enter your message" />
+              <Form.Control
+                  ref={ register({ required: true, minLength: 1, maxLength: 100 }) }
+                  name="message" id="name"
+                  as="textarea" placeholder="Enter your message" />
             </Form.Group>
-            <Button type="submit" variant="primary" disabled={!state.haveUsersLocation}>Send</Button>
+            <Button type="submit" variant="primary"
+                    disabled={ !state.haveUsersLocation || !formState.isValid }>Send</Button>
           </Form>
         </Card>
       </div>

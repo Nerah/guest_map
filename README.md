@@ -27,6 +27,7 @@ https://www.youtube.com/watch?v=J7pFiXh-ydA
 * [React Leaflet](https://github.com/PaulLeCam/react-leaflet)
 * [Bootstrap](https://github.com/twbs/bootstrap)
 * [React-bootstrap](https://github.com/react-bootstrap/react-bootstrap)
+* [React-hook-form](https://github.com/react-hook-form/react-hook-form)
 
 ##### Server side
 
