@@ -25,7 +25,8 @@ describe('POST /api/v1/messages', () => {
     const responseObject = {
       ...requestObject,
       _id: '5b57d127923211248855977c',
-      date: '2018-07-25T01:23:51.029Z'
+      date: '2018-07-25T01:23:51.029Z',
+      locality_name: 'Antarctique occidental'
     };
 
     request(app)

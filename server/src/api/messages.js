@@ -1,6 +1,8 @@
 const express = require('express');
 const Joi = require('joi');
 
+const fetch = require('node-fetch');
+
 const db = require('../db');
 const messages = db.get('messages');
 
@@ -28,13 +30,20 @@ router.post('/', (req, res, next) => {
   if (result.error == null) {
     const { name, message, latitude, longitude } = req.body;
 
-    const userMessage = {
-      name, message, latitude, longitude, date: new Date()
-    }
+    fetch(`https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${latitude}&longitude=${longitude}&localityLanguage=fr`)
+        .then(res => res.json())
+        .then(data => {
+          const locality_name = data.locality;
 
-    messages
-        .insert(userMessage)
-        .then(insertedMessage => res.json(insertedMessage));
+          const userMessage = {
+            name, message, latitude, longitude, locality_name, date: new Date()
+          }
+
+          messages
+              .insert(userMessage)
+              .then(insertedMessage => res.json(insertedMessage));
+        })
+        .catch(err => next(err));
   } else {
     next(result.error);
   }

@@ -23,7 +23,8 @@
     "helmet": "^3.22.0",
     "joi": "^17.1.1",
     "monk": "^7.3.0",
-    "morgan": "^1.10.0"
+    "morgan": "^1.10.0",
+    "node-fetch": "^2.6.0"
   },
   "devDependencies": {
     "eslint": "^7.1.0",
